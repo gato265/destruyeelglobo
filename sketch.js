@@ -1,4 +1,8 @@
-var bow , arrow,  scene;
+var PLAY = 1;
+var END = 0; 
+var gameState = PLAY; 
+
+var bow , arrow,  scene, redB, blueB, pinkB, greenB, arrowGroup;
 var bowImage, arrowImage, green_balloonImage, red_balloonImage, pink_balloonImage ,blue_balloonImage, backgroundImage;
 var select_balloon=1
 var score=0;
@@ -29,31 +33,38 @@ function setup() {
   bow = createSprite(380,220,20,50);
   bow.addImage(bowImage); 
   bow.scale = 1;
-  
-   score = 0    
+  score = 0    
+  redB = new Group(); 
+  blueB = new Group();
+  pinkB = new Group();
+  greenB = new Group();
+  arrowGroup = new Group (); 
+   
 }
 
 function draw() {
- background(0);
-  // mover el suelo
-    scene.velocityX = -3 
+ background("white");
 
-    if (scene.x < 0){
-      scene.x = scene.width/2;
-    }
-  
-  //mover arco
-  bow.y = World.mouseY
-  
+
+ if (gameState === PLAY){
+// mover el suelo
+scene.velocityX = -3 
+
+if (scene.x < 0){
+  scene.x = scene.width/2;
+}
+//mover arco
+bow.y = World.mouseY
+
    //liberar las flechas al presionar la barra espaciadora 
-  if (keyDown("space")) {
+   if (keyDown("space")) {
     createArrow();
    // if (arrow.isTouching(select_balloon)) {
     //select_balloon.destroy(); 
     //}
   }
-   
-  //Descomenta la opción correcta para obtener un número aleatorio entre 1 y 4 
+
+   //Descomenta la opción correcta para obtener un número aleatorio entre 1 y 4 
    select_balloon = Math.round(random(1,4));
  if (World.frameCount % 100 == 0) {
 switch(select_balloon ){
@@ -67,23 +78,39 @@ case 4:greenBalloon();
 break;
 default:break;
  }
-
-
-            // switch(select_balloon ){
-            // case 1: redBalloon();
-            // break;
-            // case 1:blueBalloon();
-            // break;
-            // case 1:pinkBalloon();
-            // break;
-            // case 1:greenBalloon();
-            // break;
-            // default:break;
-            // }
-
 }
-    
+if (frameCount > 700) {
+  gameState = END; 
+  }
+
+if (gameState === END) {
+  bow.destroy();
+  scene.velocityX = 0;
+}
+  
+}
+  if(arrowGroup.isTouching(redB)){
+    redB.destroyEach(); 
+    arrowGroup.destroyEach(); 
+    score = score+1; 
+  }
+  if(arrowGroup.isTouching(blueB)){
+    blueB.destroyEach(); 
+    arrowGroup.destroyEach(); 
+    score = score+2; 
+  }
+  if(arrowGroup.isTouching(greenB)){
+    greenB.destroyEach(); 
+    arrowGroup.destroyEach(); 
+    score = score+3; 
+  }
+  if(arrowGroup.isTouching(pinkB)){
+    pinkB.destroyEach(); 
+    arrowGroup.destroyEach(); 
+    score = score+1; 
+  }
   drawSprites();
+  text("puntuacion" + score, 300, 50);
 }
 
 
@@ -96,6 +123,7 @@ default:break;
   arrow.velocityX = -4;
   arrow.lifetime = 100;
   arrow.scale = 0.3;
+  arrowGroup.add(arrow);
 }
 
 function redBalloon() {
@@ -104,6 +132,7 @@ function redBalloon() {
   red.velocityX = 3;
   red.lifetime = 150;
   red.scale = 0.1;
+  redB.add(red);
 }
 
 function blueBalloon() {
@@ -112,6 +141,7 @@ function blueBalloon() {
   blue.velocityX = 3;
   blue.lifetime = 150;
   blue.scale = 0.1;
+  blueB.add(blue);
 }
 
 function greenBalloon() {
@@ -120,6 +150,7 @@ function greenBalloon() {
   green.velocityX = 3;
   green.lifetime = 150;
   green.scale = 0.1;
+  greenB.add(green);
 }
 
 function pinkBalloon() {
@@ -128,4 +159,5 @@ function pinkBalloon() {
   pink.velocityX = 3;
   pink.lifetime = 150;
   pink.scale = 1
+  pinkB.add(pink);
 }
